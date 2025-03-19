@@ -36,10 +36,10 @@ CREATE TABLE users (
 
 -- usernames are up to 20 characters
 CREATE TABLE user_info (
-    user_id         CHAR(10),
+    user_id         INT,
     salt            CHAR(8)         NOT NULL,
     password_hash   BINARY(64)      NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Create the reviews table.

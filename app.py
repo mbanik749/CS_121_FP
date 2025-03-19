@@ -41,7 +41,7 @@ def get_conn(user, password):
           # SHOW VARIABLES WHERE variable_name LIKE 'port';
           port='3306',
           password=password,
-          database='ecommerce_db'
+          database='fp_db'
         )
         print('Successfully connected.')
         return conn

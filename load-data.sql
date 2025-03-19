@@ -71,10 +71,8 @@ VALUES
 ('Silk Veil Primer', 'Smashbox', 'Makeup', 21.99, 'Silicone, Water, Dimethicone');
 
 
--- -------------------------------------------------------
 -- Insert records into the users table.
 -- Columns: username, email, password_hash, user_type
--- -------------------------------------------------------
 INSERT INTO users (username, email, password_hash, user_type)
 VALUES 
 ('jdoe', 'jdoe@example.com', 'hash1', 'client');
@@ -115,11 +113,8 @@ INSERT INTO users (username, email, password_hash, user_type)
 VALUES 
 ('gina', 'gina@example.com', 'hash8', 'client');
 
-
--- -------------------------------------------------------
 -- Insert records into the reviews table.
 -- Columns: user_id, product_id, rating, review_text
--- -------------------------------------------------------
 -- Here we insert 50 sample reviews with a variety of ratings and text.
 INSERT INTO reviews (user_id, product_id, rating, review_text)
 VALUES (1, 1, 5, 'Amazing hydrating serum! My skin feels refreshed.');
@@ -242,10 +237,8 @@ VALUES (9, 15, 5, 'Primer creates a smooth, even base for makeup.');
 INSERT INTO reviews (user_id, product_id, rating, review_text)
 VALUES (10, 1, 4, 'Hydrating serum exceeded my expectations.');
 
--- -------------------------------------------------------
 -- Insert records into the orders table.
 -- Columns: user_id, product_id, address, quantity
--- -------------------------------------------------------
 INSERT INTO orders (user_id, product_id, address, quantity)
 VALUES (1, 1, '123 Main St, City, Country', 2);
 INSERT INTO orders (user_id, product_id, address, quantity)
