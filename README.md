@@ -67,13 +67,21 @@ Viewing all customer orders
 Viewing all product reviews
 Deleting inappropriate or outdated reviews
 
-To test first, run python3 app.py. Then if you would like to test app_client.py functionality run python3 app_client.py. When you are prompted to log in here is an example log in you can use:
+**Testing**
+
+First, in your command line run python3 app.py. Then if you would like to test client interface functionality run python3 app_client.py. When you are prompted to log in here is an example log in you can use:
+
 Username - jdoe
+
 Password - hash1
-If you would like to test app_admin.py functionality run python3 app_admin.py. When you are prompted to log in here is an example log in you can use:
+
+If you would like to test admin interface functionality run python3 app_admin.py. When you are prompted to log in here is an example log in you can use:
+
 Username - admin1
+
 Password - hashadmin1
 
 Once you log in to either client or admin you will be directed to their respective menu pages and be prompted with further instructions.
 
-Thank you! If you have any questions feel free to reach out to [mbanik@caltech.edu](mailto:mbanik@caltech.edu) and [jkwoo@caltech.edu](mailto:jkwoo@caltech.edu).
+
+**Thank you!** If you have any questions feel free to reach out to [mbanik@caltech.edu](mailto:mbanik@caltech.edu) and [jkwoo@caltech.edu](mailto:jkwoo@caltech.edu).
