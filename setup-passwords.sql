@@ -46,7 +46,6 @@ CREATE TABLE user_info (
     password_hash BINARY(64) NOT NULL
 );
 
--- [Problem 1a]
 -- Adds a new user to the user_info table, using the specified password (max
 -- of 20 characters). Salts the password with a newly-generated salt value,
 -- and then the salt and hash values are both stored in the table.
@@ -63,7 +62,6 @@ BEGIN
 END !
 DELIMITER ;
 
--- [Problem 1b]
 -- Authenticates the specified username and password against the data
 -- in the user_info table.  Returns 1 if the user appears in the table, and the
 -- specified password hashes to the value for the user. Otherwise returns 0.
@@ -89,7 +87,6 @@ BEGIN
 END !
 DELIMITER ;
 
--- [Problem 1c]
 -- Add at least two users into your user_info table so that when we run this file,
 -- we will have examples users in the database.
 CALL sp_add_user('jdoe', 'hash1');
@@ -103,7 +100,6 @@ CALL sp_add_user('elaine', 'hash6');
 CALL sp_add_user('frank', 'hash7');
 CALL sp_add_user('gina', 'hash8');
 
--- [Problem 1d]
 -- Create a procedure sp_change_password to generate a new salt and change the given
 -- user's password to the given password (after salting and hashing)
 DROP PROCEDURE IF EXISTS sp_change_password;
@@ -122,96 +118,3 @@ BEGIN
 
 END !
 DELIMITER ;
-
-
-
-
-
-/*-- (Provided) This function generates a specified number of characters for using as a
--- salt in passwords.
-DROP FUNCTION IF EXISTS make_salt;
-DELIMITER !
-CREATE FUNCTION make_salt(num_chars INT)
-RETURNS VARCHAR(20) DETERMINISTIC
-BEGIN
-    DECLARE salt VARCHAR(20) DEFAULT '';
-
-    -- Don't want to generate more than 20 characters of salt.
-    SET num_chars = LEAST(20, num_chars);
-
-    -- Generate the salt!  Characters used are ASCII code 32 (space)
-    -- through 126 ('z').
-    WHILE num_chars > 0 DO
-        SET salt = CONCAT(salt, CHAR(32 + FLOOR(RAND() * 95)));
-        SET num_chars = num_chars - 1;
-    END WHILE;
-
-    RETURN salt;
-END !
-DELIMITER ;
-
--- Note that users_info is already defined in setup-passwords.sql
-
--- [Problem 1a]
--- Adds a new user to the user_info table, using the specified password (max
--- of 20 characters). Salts the password with a newly-generated salt value,
--- and then the salt and hash values are both stored in the table.
-DROP PROCEDURE IF EXISTS sp_add_user;
-DELIMITER !
-CREATE PROCEDURE sp_add_user(new_user_id CHAR(10), password VARCHAR(20))
-BEGIN
-  DECLARE salt CHAR(8);
-
-  SET salt = make_salt(8);
-
-  INSERT INTO user_info VALUES
-    (new_user_id, salt, SHA2(CONCAT(password, salt), 256));
-END !
-DELIMITER ;
-
--- [Problem 1b]
--- Authenticates the specified user_id and password against the data
--- in the user_info table.  Returns 1 if the user appears in the table, and the
--- specified password hashes to the value for the user. Otherwise returns 0.
-DROP FUNCTION IF EXISTS authenticate;
-DELIMITER !
-CREATE FUNCTION authenticate(user_id VARCHAR(10), password VARCHAR(20))
-RETURNS TINYINT DETERMINISTIC
-BEGIN
-  DECLARE salt CHAR(8);
-  DECLARE password_hash BINARY(64);
-
-  SELECT user_info.salt, user_info.password_hash INTO salt, password_hash
-  FROM user_info
-  WHERE user_info.user_id = user_id;
-
-  IF salt IS NULL THEN
-    RETURN 0;
-  ELSEIF SHA2(CONCAT(password, salt), 256) <> password_hash THEN
-    RETURN 0;
-  END IF;
-
-  RETURN 1;
-END !
-DELIMITER ;
-
--- [Problem 1d]
--- Create a procedure sp_change_password to generate a new salt and change the given
--- user's password to the given password (after salting and hashing)
-DROP PROCEDURE IF EXISTS sp_change_password;
-DELIMITER !
-CREATE PROCEDURE sp_change_password(user_id CHAR(10), new_password VARCHAR(20))
-BEGIN
-  DECLARE salt CHAR(8);
-
-  SET salt = make_salt(8);
-
-  UPDATE user_info 
-  SET 
-    user_info.salt = salt,
-    password_hash = SHA2(CONCAT(new_password, salt), 256)
-  WHERE user_info.user_id = user_id;
-
-END !
-DELIMITER ;
-*/

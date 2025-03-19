@@ -1,6 +1,6 @@
 -- This file includes:
---  1. ~15 product records (from product_info.csv sample structure)
---  2. 10 user records (both clients and admins as per your proposal)
+--  1. ~15 product records (from product_info.csv)
+--  2. 10 user records (both clients and admins)
 --  3. ~50 review records (to simulate customer feedback)
 --  4. 10 sample order records
 --
