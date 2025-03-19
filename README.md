@@ -13,17 +13,14 @@ This dataset includes:
 ## General instructions:
 There are two aspects to load this project: MySQL and Python. First load follow all the MySQL instructions then follow all the Python instructions. 
 
-## Data Souce:
-Data comes from Kaggle: https://www.kaggle.com/datasets/nadyinky/sephora-products-and-skincare-reviews?resource=download 
-
 ### MySQL instructions:
 1. Load in MySQL. If you have not already go to terminal and enter these two commands into the command line.
 One: alias mysql='/usr/local/mysql/bin/mysql -u root -p';
 Two: mysql --local-infile -u root -p     
 
 2. Load files and database. 
-    CREATE database fp_db;
-    USE fp_db;
+    CREATE database ecommerce_db;
+    USE ecommerce_db;
     source setup;
     source load-data.sql;
     source setup-passwords.sql;
@@ -69,5 +66,14 @@ Adding, updating, and deleting products
 Viewing all customer orders
 Viewing all product reviews
 Deleting inappropriate or outdated reviews
+
+To test first, run python3 app.py. Then if you would like to test app_client.py functionality run python3 app_client.py. When you are prompted to log in here is an example log in you can use:
+Username - jdoe
+Password - hash1
+If you would like to test app_admin.py functionality run python3 app_admin.py. When you are prompted to log in here is an example log in you can use:
+Username - admin1
+Password - hashadmin1
+
+Once you log in to either client or admin you will be directed to their respective menu pages and be prompted with further instructions.
 
 Thank you! If you have any questions feel free to reach out to [mbanik@caltech.edu](mailto:mbanik@caltech.edu) and [jkwoo@caltech.edu](mailto:jkwoo@caltech.edu).
