@@ -50,9 +50,14 @@ def get_conn(user, password):
         sys.exit(1)
 
 def bye_bye_user():
-    """Exits the program with a goodbye message."""
+    """Exits the program with a goodbye message to the user."""
     print("\nGoodbye! Thank you for shopping at Rejuvenation Station!")
     print("\nHope to see you again soon!")
+    exit()
+
+def bye_bye_admin():
+    """Exits the program with a goodbye message to the admin."""
+    print("\nGoodbye!")
     exit()
 
 def greet_user(username, user_type):
