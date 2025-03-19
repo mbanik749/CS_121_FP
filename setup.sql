@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user_info;
 
 /*
 -- Create the products table.
@@ -37,6 +38,14 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,             -- Email address (must be unique).
     password_hash VARCHAR(255) NOT NULL,            -- Hashed password for security.
     user_type ENUM('client', 'admin') NOT NULL      -- User role: 'client' for customers, 'admin' for site administrators.
+);
+
+-- usernames are up to 20 characters
+CREATE TABLE user_info (
+    user_id         CHAR(10),
+    salt            CHAR(8)         NOT NULL,
+    password_hash   BINARY(64)      NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 /*

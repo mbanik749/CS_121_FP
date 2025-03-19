@@ -5,23 +5,32 @@
 -- privileges for the Sephora-like e-commerce shop project.
 --
 -- Users defined:
--- 1. shop_admin: Administrative user with full privileges.
--- 2. shop_client: Client user with restricted privileges (SELECT, INSERT, UPDATE, DELETE).
+-- 1. admin: Administrative user with full privileges.
+-- 2. client: Client user with restricted privileges (SELECT, INSERT, UPDATE, DELETE).
 --
 -- Assumes the database is named "ecommerce_db".
 -- =======================================================
 
+DROP USER IF EXISTS 'admin'@'localhost', 'client'@'localhost';
+
 -- Create an admin user for the shop.
-CREATE USER 'shop_admin'@'localhost' IDENTIFIED BY 'adminpw';
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'adminpw';
 
 -- Create a client user for the shop.
-CREATE USER 'shop_client'@'localhost' IDENTIFIED BY 'clientpw';
+CREATE USER 'client'@'localhost' IDENTIFIED BY 'clientpw';
 
 -- Grant all privileges to the admin user on the entire database.
-GRANT ALL PRIVILEGES ON ecommerce_db.* TO 'shop_admin'@'localhost';
+GRANT ALL PRIVILEGES ON ecommerce_db.* TO 'admin'@'localhost';
 
 -- Grant limited privileges (SELECT, INSERT, UPDATE, DELETE) to the client user.
-GRANT SELECT, INSERT, UPDATE, DELETE ON ecommerce_db.* TO 'shop_client'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON ecommerce_db.* TO 'client'@'localhost';
+GRANT SELECT ON ecommerce_db.reviews TO 'client'@'localhost';
+GRANT SELECT ON ecommerce_db.orders TO 'client'@'localhost';
+GRANT SELECT ON ecommerce_db.* TO 'client'@'localhost';
+GRANT EXECUTE ON ecommerce_db.* TO 'client'@'localhost';
+
+-- GRANT EXECUTE ON ecommerce_db.reviews TO 'client'@'localhost';
+-- GRANT EXECUTE ON ecommerce_db.orders TO 'client'@'localhost';
 
 -- Ensure that the privileges take effect immediately.
 FLUSH PRIVILEGES;

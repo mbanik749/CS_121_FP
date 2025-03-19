@@ -126,5 +126,27 @@ END$$
 DELIMITER ;
 
 -- =======================================================
+-- Role Checks
+-- =======================================================
+
+DROP FUNCTION IF EXISTS is_client;
+DELIMITER $$
+
+CREATE FUNCTION is_client(user_name VARCHAR(255))
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+    DECLARE is_client_user BOOLEAN;
+
+    SELECT (user_type = 'client') INTO is_client_user
+    FROM users
+    WHERE username = user_name;
+
+    RETURN is_client_user;
+END$$
+
+DELIMITER ;
+
+-- =======================================================
 -- End of setup-routines.sql
 -- =======================================================
