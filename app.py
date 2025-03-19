@@ -1,8 +1,23 @@
 """
-Code demo from Final Project Lecture 22wi, providing
-an example of using MySQL with Python for an animal adoption
-agency database (inspired by 21wi midterm).
+AUTHORS:
+Meher Banik [mbanik@caltech.edu]
+Jana Woo [jkwoo@caltech.edu]
+
+Used by both the client and admin interfaces of the Rejuvenation. 
+Originally adapted from a code demo (Final Project Lecture 22wi) 
+for an animal adoption agency database.
+
+This file is dependent on MySQL and supports database connection, login flow,
+authentication, user greeting, and general query execution for reusable operations.
+
+Features:
+- Connect to MySQL database
+- Execute read/write SQL queries
+- Handle login and user authentication
+- Determine and route user type (client/admin)
+- Display exit messages for users and admins
 """
+
 import sys  # to print error messages to sys.stderr
 import mysql.connector
 # To get error codes from the connector, useful for user-friendly
@@ -12,11 +27,7 @@ import mysql.connector.errorcode as errorcode
 # Debugging flag to print errors when debugging that shouldn't be visible
 # to an actual client. Set to False when done testing.
 DEBUG = False
-NUM_PAGES = 10
 
-# ----------------------------------------------------------------------
-# SET UP
-# ----------------------------------------------------------------------
 def get_conn(user, password):
     """"
     Returns a connected MySQL connector instance, if connection is successful.
@@ -49,22 +60,23 @@ def get_conn(user, password):
             sys.stderr('An error occurred, please contact the administrator.')
         sys.exit(1)
 
+
 def bye_bye_user():
     """Exits the program with a goodbye message to the user."""
     print("\nGoodbye! Thank you for shopping at Rejuvenation Station!")
     print("\nHope to see you again soon!")
     exit()
 
+
 def bye_bye_admin():
     """Exits the program with a goodbye message to the admin."""
     print("\nGoodbye!")
     exit()
 
+
 def greet_user(username, user_type):
-    # TODO might need to see if user is client then app-client.py is run
-    # TODO might need to see if user is admin then app-admin.py is run
     '''
-    Greets the user if the login is successful!
+    Greets the user if the login is successful! The greeting is specific to the user type.
     '''
     if user_type == "client":
         print(f"\nLogin successful! \n\nWelcome to the Rejuvenation Station, {username}.")
@@ -80,6 +92,9 @@ def greet_user(username, user_type):
 
 
 def check_user_type(connection, username):
+    '''
+    Return the type of user. The options are client and admin.
+    '''
     cursor = connection.cursor()
     query = f"SELECT user_type FROM users WHERE username = '{username}';"
     result = execute_read_query(cursor, query)
@@ -89,6 +104,9 @@ def check_user_type(connection, username):
 
 
 def authenticate_user(connection, username, password):
+    '''
+    User authentication to check that the user exists and the pasword is correct.
+    '''
     cursor = connection.cursor()
     query = f"SELECT authenticate('{username}', '{password}');"
     result = execute_read_query(cursor, query)
@@ -113,10 +131,6 @@ def login_flow(connection):
         print("Invalid credentials. Please try again.")
 
 
-# ----------------------------------------------------------------------
-# Queries
-# ----------------------------------------------------------------------
-
 def execute_read_query(cursor, query):
     """Executes a read-only SQL query and returns the results."""
     try:
@@ -140,6 +154,3 @@ def execute_write_query(connection, cursor, query, params=None):
             sys.exit(1)
         print("Database update failed. Contact system administrator.", file=sys.stderr)
 
-# ----------------------------------------------------------------------
-# TODO: Formatting related things and pagination - might not even need to do
-# ----------------------------------------------------------------------

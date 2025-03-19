@@ -1,3 +1,20 @@
+"""
+AUTHORS:
+Meher Banik [mbanik@caltech.edu]
+Jana Woo [jkwoo@caltech.edu]
+
+An interface for admin users who manage the database for Rejuvenation 
+Station. This file is dependent on MySQL and app.py helper functions.
+
+Features:
+- Add new products to the database
+- Update existing product information
+- Delete products
+- View all customer orders
+- View all product reviews
+- Delete reviews
+"""
+
 import sys
 import mysql.connector
 import mysql.connector.errorcode as errorcode
@@ -234,7 +251,12 @@ def main(cursor):
     """
     admin_menu(cursor)
 
+
 if __name__ == '__main__':
+    # This conn is a global object that other functinos can access.
+    # You'll need to use cursor = conn.cursor() each time you are
+    # about to execute a query with cursor.execute(<sqlquery>)
     conn = get_conn('admin', 'adminpw')
     user_id = login_flow(conn)
     main(conn.cursor())
+

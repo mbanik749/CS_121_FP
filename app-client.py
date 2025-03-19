@@ -1,3 +1,20 @@
+"""
+AUTHORS:
+Meher Banik [mbanik@caltech.edu]
+Jana Woo [jkwoo@caltech.edu]
+
+An interface for client users who interact with the Rejuvenation Station.
+This file is dependent on MySQL and app.py helper functions.
+
+Features:
+- View top-rated products
+- Search for products by name, category, or brand
+- View product reviews
+- Place orders
+- Leave reviews for products
+- View personal order history
+"""
+
 import sys
 import mysql.connector
 import mysql.connector.errorcode as errorcode
@@ -148,15 +165,12 @@ def place_order(cursor):
         quantity = input("Enter quantity: ")
         address = input("Enter shipping address: ")
 
-        # Call the stored procedure with an OUT parameter
         call_proc = """
             CALL sp_place_order(%s, %s, %s, %s, @output_order_id);
         """
         params = (user_id, product_id, address, quantity)
-
         execute_write_query(conn, cursor, call_proc, params)
 
-        # Retrieve the output order_id
         result = execute_read_query(cursor, "SELECT @output_order_id;")
         order_id = result[0][0]
 
@@ -167,10 +181,10 @@ def place_order(cursor):
 
 def leave_review(cursor, username):
     """
-    Allows users to leave a review for a product.
-    Prompts for a product ID, rating, and review text,
-    looks up the user_id from the username,
-    then asks the user to confirm before inserting it into the database.
+    Allows users to leave a review for a product. Prompts for a 
+    product ID, rating, and review text, looks up the user_id 
+    from the username, then asks the user to confirm before 
+    inserting it into the database.
     """
     try:
         user_query = f"SELECT user_id FROM users WHERE username = '{username}';"
@@ -253,9 +267,10 @@ def verify_client(username, cursor):
 
 
 if __name__ == '__main__':
-    # This conn is a global object that other functions can access.
+    # This conn is a global object that other functinos can access.
     # You'll need to use cursor = conn.cursor() each time you are
     # about to execute a query with cursor.execute(<sqlquery>)
     conn = get_conn('client', 'clientpw')
     user_id = login_flow(conn)
     main(conn.cursor(), user_id)
+
