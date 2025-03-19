@@ -13,6 +13,9 @@ This dataset includes:
 ## General instructions:
 There are two aspects to load this project: MySQL and Python. First load follow all the MySQL instructions then follow all the Python instructions. 
 
+## Data Souce:
+Data comes from Kaggle: https://www.kaggle.com/datasets/nadyinky/sephora-products-and-skincare-reviews?resource=download 
+
 ### MySQL instructions:
 1. Load in MySQL. If you have not already go to terminal and enter these two commands into the command line.
 One: alias mysql='/usr/local/mysql/bin/mysql -u root -p';
