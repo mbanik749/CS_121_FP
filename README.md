@@ -19,7 +19,7 @@ One: alias mysql='/usr/local/mysql/bin/mysql -u root -p';
 Two: mysql --local-infile -u root -p     
 
 2. Load files and database. 
-    CREATE database ecommerce_db;
+    CREATE database fp_db;
     USE fp_db;
     source setup;
     source load-data.sql;
