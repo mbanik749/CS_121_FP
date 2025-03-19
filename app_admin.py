@@ -257,6 +257,6 @@ if __name__ == '__main__':
     # You'll need to use cursor = conn.cursor() each time you are
     # about to execute a query with cursor.execute(<sqlquery>)
     conn = get_conn('admin', 'adminpw')
-    user_id = login_flow(conn)
+    user_id = login_flow(conn, "admin")
     main(conn.cursor())
 

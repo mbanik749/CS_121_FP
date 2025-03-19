@@ -41,7 +41,7 @@ def get_conn(user, password):
           # SHOW VARIABLES WHERE variable_name LIKE 'port';
           port='3306',
           password=password,
-          database='fp_db'
+          database='ecommerce_db'
         )
         print('Successfully connected.')
         return conn
@@ -113,7 +113,7 @@ def authenticate_user(connection, username, password):
     return result and result[0][0] == 1
 
 
-def login_flow(connection):
+def login_flow(connection, user_type):
     '''
     Goes through login flow. Checks to see if the user wants 
     to login to the shop. If not they are exited from shopping.
@@ -126,8 +126,12 @@ def login_flow(connection):
         username = input("Username: ")
         pwd = input("Password: ")
         if authenticate_user(connection, username, pwd):
-            greet_user(username, check_user_type(connection, username))
-            return username
+            if user_type != check_user_type(connection, username):
+                print("The type of your user must match the python file running.")
+                print("Currently they do not match.\n")
+            else:
+                greet_user(username, user_type)
+                return username
         print("Invalid credentials. Please try again.")
 
 
