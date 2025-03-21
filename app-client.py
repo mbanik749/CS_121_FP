@@ -48,7 +48,7 @@ def main_menu(cursor, username):
         elif choice == '3':
             view_product_reviews(cursor)
         elif choice == '4':
-            place_order(cursor)
+            place_order(cursor, username)
         elif choice == '5':
             leave_review(cursor, username)
         elif choice == '6':
@@ -135,7 +135,28 @@ def view_product_reviews(cursor):
     Allows users to view reviews for a specific product.
     Prompts for a product ID and displays associated reviews.
     """
-    product_id = input("Enter Product ID to view reviews: ")
+
+    print("You will need to know the ID of the product reviews you would like to view.")
+    product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+    if product_id_print != "y" and product_id_print != "n":
+        print("\nYour input was invalid. You get one more try before you are returned to the main menu.")
+        product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+        if product_id_print != "y" and product_id_print != "n":
+            print("\nYour input was invalid.")
+            return
+    if product_id_print == "y":
+        query = "SELECT product_id, name FROM products ORDER BY product_id;"
+        products = execute_read_query(cursor, query)
+
+        if products:
+            print("\nAvailable Products:")
+            print(f"{'Product ID':<14}{'Product Name'}")
+            for row in products:
+                print(f"{row[0]:<14}{row[1]}")
+        else:
+            print("No products found in the database.")
+
+    product_id = input("\nEnter Product ID to view reviews: ")
     query = f"""
         SELECT u.username, r.rating, r.review_text, r.created_at
         FROM reviews r
@@ -154,14 +175,42 @@ def view_product_reviews(cursor):
         print("No reviews found for this product.")
 
 
-def place_order(cursor):
+def place_order(cursor, username):
     """
     Allows users to place an order for a product.
     Prompts for product ID and quantity, then confirms order.
     """
     try:
-        user_id = input("Enter your user ID: ")
-        product_id = input("Enter Product ID to order: ")
+        user_query = f"SELECT user_id FROM users WHERE username = '{username}';"
+        user_order = execute_read_query(cursor, user_query)
+        
+        if not user_order:
+            print(f"No user found with username '{username}'. Order submission canceled.")
+            return
+        
+        user_id = user_order[0][0] 
+
+        print("You will need to know the ID of the product you would like purchase.")
+        product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+        if product_id_print != "y" and product_id_print != "n":
+            print("\nYour input was invalid. You get one more try before you are returned to the main menu.")
+            product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+            if product_id_print != "y" and product_id_print != "n":
+                print("\nYour input was invalid.")
+                return
+        if product_id_print == "y":
+            query = "SELECT product_id, name FROM products ORDER BY product_id;"
+            products = execute_read_query(cursor, query)
+
+            if products:
+                print("\nAvailable Products:")
+                print(f"{'Product ID':<14}{'Product Name'}")
+                for row in products:
+                    print(f"{row[0]:<14}{row[1]}")
+            else:
+                print("No products found in the database.")
+
+        product_id = input("\nEnter Product ID to order: ")
         quantity = input("Enter quantity: ")
         address = input("Enter shipping address: ")
 

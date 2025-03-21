@@ -67,6 +67,19 @@ def add_product(cursor):
     Admin tool to add a new product to the catalog.
     Prompts for input, displays a summary, and asks for confirmation.
     """
+    print("\nBefore you add the product. You are able to add new brand types and categories.")
+    print("For reference, here are the categories we currently carry:\n")
+
+    category_query = "SELECT DISTINCT category FROM products;"
+    categories = execute_read_query(cursor, category_query)
+
+    if categories:
+        for idx, row in enumerate(categories, start=1):
+            print(f"  {idx}. {row[0]}")
+    else:
+        print("  (No categories found in the database yet.)")
+
+
     name = input("Enter product name: ").strip()
     brand = input("Enter brand name: ").strip()
     category = input("Enter product category: ").strip()
@@ -98,7 +111,27 @@ def update_product(cursor):
     """
     Admin tool to update existing product information.
     """
-    product_id = input("Enter Product ID to update: ").strip()
+    print("You will need to know the ID of the product you would like update.")
+    product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+    if product_id_print != "y" and product_id_print != "n":
+        print("\nYour input was invalid. You get one more try before you are returned to the main menu.")
+        product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+        if product_id_print != "y" and product_id_print != "n":
+            print("\nYour input was invalid.")
+            return
+    if product_id_print == "y":
+        query = "SELECT product_id, name FROM products ORDER BY product_id;"
+        products = execute_read_query(cursor, query)
+
+        if products:
+            print("\nAvailable Products:")
+            print(f"{'Product ID':<14}{'Product Name'}")
+            for row in products:
+                print(f"{row[0]:<14}{row[1]}")
+        else:
+            print("No products found in the database.")
+        
+    product_id = input("\nEnter Product ID to update: ").strip()
 
     print("\nWhat would you like to update?")
     print("  1 - Name")
@@ -136,7 +169,28 @@ def delete_product(cursor):
     Admin tool to delete a product from the catalog.
     Shows product details before confirming deletion.
     """
-    product_id = input("Enter Product ID to delete: ").strip()
+
+    print("You will need to know the ID of the product you would like to delete.")
+    product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+    if product_id_print != "y" and product_id_print != "n":
+        print("\nYour input was invalid. You get one more try before you are returned to the main menu.")
+        product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+        if product_id_print != "y" and product_id_print != "n":
+            print("\nYour input was invalid.")
+            return
+    if product_id_print == "y":
+        query = "SELECT product_id, name FROM products ORDER BY product_id;"
+        products = execute_read_query(cursor, query)
+
+        if products:
+            print("\nAvailable Products:")
+            print(f"{'Product ID':<14}{'Product Name'}")
+            for row in products:
+                print(f"{row[0]:<14}{row[1]}")
+        else:
+            print("No products found in the database.")
+    
+    product_id = input("\nEnter Product ID to delete: ").strip()
 
     query = f"SELECT name, brand, category, price, ingredients FROM products WHERE product_id = {product_id};"
     result = execute_read_query(cursor, query)
@@ -212,7 +266,28 @@ def delete_review(cursor):
     Admin tool to delete a review.
     Displays review details before confirming deletion.
     """
-    review_id = input("Enter Review ID to delete: ").strip()
+
+    print("You will need to know the ID of the review you would like to delete.")
+    review_id_print = input("Do you want all the review ID's printed for reference [y/n]? ").strip()
+    if review_id_print != "y" and review_id_print != "n":
+        print("\nYour input was invalid. You get one more try before you are returned to the main menu.")
+        review_id_print = input("Do you want all the review ID's printed for reference [y/n]? ").strip()
+        if review_id_print != "y" and review_id_print != "n":
+            print("\nYour input was invalid.")
+            return
+    if review_id_print == "y":
+        query = "SELECT review_id, review_text FROM reviews ORDER BY review_id;"
+        reviews = execute_read_query(cursor, query)
+
+        if reviews:
+            print("\nAll Reviews:")
+            print(f"{'Review ID':<14}{'Review'}")
+            for row in reviews:
+                print(f"{row[0]:<14}{row[1]}")
+        else:
+            print("No reviews found in the database.")
+    
+    review_id = input("\nEnter Review ID to delete: ").strip()
 
     query = f"""
         SELECT r.review_id, u.username, r.product_id, r.rating, r.review_text, r.created_at

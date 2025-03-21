@@ -1,3 +1,6 @@
+-- =======================================================
+-- setup-routines.sql
+--
 -- This file defines the procedural SQL components for the
 -- Sephora-like e-commerce shop.
 --
@@ -7,10 +10,16 @@
 --   2. A stored procedure (sp_place_order) to place an order.
 --   3. Triggers to automatically update a product's average 
 --      rating when a review is inserted, updated, or deleted.
+--
+-- Prerequisite: The DDL for tables (products, users, reviews, 
+-- and orders) must be executed before running this file.
+-- =======================================================
 
+-- -------------------------------------------------------
 -- 1. User-Defined Function: get_discounted_price
 --    Given a product ID and a discount rate (e.g., 0.15 for 15% off),
 --    returns the product's price after applying the discount.
+-- -------------------------------------------------------
 DELIMITER $$
 CREATE FUNCTION get_discounted_price(
     p_product_id INT,
@@ -28,6 +37,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- -------------------------------------------------------
 -- 2. Stored Procedure: sp_place_order
 --    Places an order for a given user and product.
 --    Inputs:
@@ -37,6 +47,7 @@ DELIMITER ;
 --      p_quantity   - number of items ordered.
 --    Output:
 --      p_order_id   - the auto-generated order ID.
+-- -------------------------------------------------------
 DELIMITER $$
 CREATE PROCEDURE sp_place_order (
     IN p_user_id INT,
@@ -60,12 +71,15 @@ BEGIN
     -- Capture the auto-generated order ID.
     SET p_order_id = LAST_INSERT_ID();
     
+    -- (Optionally, you could log the total or perform further operations.)
 END$$
 DELIMITER ;
 
+-- -------------------------------------------------------
 -- 3. Trigger: Update Average Rating After INSERT on Reviews
 --    Whenever a new review is added, recalculate the product's 
 --    average rating from all its reviews.
+-- -------------------------------------------------------
 DELIMITER $$
 CREATE TRIGGER trg_update_avg_rating_after_insert
 AFTER INSERT ON reviews
@@ -78,6 +92,10 @@ BEGIN
     WHERE product_id = NEW.product_id;
 END$$
 DELIMITER ;
+
+-- -------------------------------------------------------
+-- Optional: Additional triggers to update average rating on UPDATE and DELETE.
+-- -------------------------------------------------------
 
 -- Trigger: Update Average Rating After UPDATE on Reviews
 DELIMITER $$
@@ -107,7 +125,10 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- =======================================================
 -- Role Checks
+-- =======================================================
+
 DROP FUNCTION IF EXISTS is_client;
 DELIMITER $$
 
@@ -125,3 +146,7 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+-- =======================================================
+-- End of setup-routines.sql
+-- =======================================================
