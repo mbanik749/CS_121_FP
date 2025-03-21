@@ -1,3 +1,5 @@
+-- Meher Banik's setup-passwords from A6.
+
 -- CS 121 24wi: Password Management (A6 and Final Project)
 
 -- (Provided) This function generates a specified number of characters for using as a
@@ -46,6 +48,7 @@ CREATE TABLE user_info (
     password_hash BINARY(64) NOT NULL
 );
 
+-- [Problem 1a]
 -- Adds a new user to the user_info table, using the specified password (max
 -- of 20 characters). Salts the password with a newly-generated salt value,
 -- and then the salt and hash values are both stored in the table.
@@ -62,6 +65,7 @@ BEGIN
 END !
 DELIMITER ;
 
+-- [Problem 1b]
 -- Authenticates the specified username and password against the data
 -- in the user_info table.  Returns 1 if the user appears in the table, and the
 -- specified password hashes to the value for the user. Otherwise returns 0.
@@ -87,6 +91,7 @@ BEGIN
 END !
 DELIMITER ;
 
+-- [Problem 1c]
 -- Add at least two users into your user_info table so that when we run this file,
 -- we will have examples users in the database.
 CALL sp_add_user('jdoe', 'hash1');
@@ -100,6 +105,7 @@ CALL sp_add_user('elaine', 'hash6');
 CALL sp_add_user('frank', 'hash7');
 CALL sp_add_user('gina', 'hash8');
 
+-- [Problem 1d]
 -- Create a procedure sp_change_password to generate a new salt and change the given
 -- user's password to the given password (after salting and hashing)
 DROP PROCEDURE IF EXISTS sp_change_password;
