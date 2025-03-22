@@ -100,7 +100,18 @@ def search_product(cursor):
             WHERE name LIKE '{like_pattern}';
         """
     elif option == "2":
-        keyword = input("Enter category to search: ")
+        print("For reference, here are the categories we currently carry:\n")
+
+        category_query = "SELECT DISTINCT category FROM products;"
+        categories = execute_read_query(cursor, category_query)
+
+        if categories:
+            for idx, row in enumerate(categories, start=1):
+                print(f"  {idx}. {row[0]}")
+        else:
+            print("  (No categories found on our website yet.)")
+        
+        keyword = input("\nEnter category to search: ")
         like_pattern = f"%{keyword}%"
         query = f"""
             SELECT product_id, name, brand, category
@@ -154,9 +165,26 @@ def view_product_reviews(cursor):
             for row in products:
                 print(f"{row[0]:<14}{row[1]}")
         else:
-            print("No products found in the database.")
+            print("No products found on our website.")
 
-    product_id = input("\nEnter Product ID to view reviews: ")
+    while True:
+        product_id = input("\nEnter Product ID to view reviews: ")
+        try:
+            product = float(product_id)
+            if product < 0:
+                print("Product ID cannot be negative. Please try again.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a numeric Product ID (e.g., 2).")
+
+    check_query = f"SELECT name FROM products WHERE product_id = {product_id};"
+    result = execute_read_query(cursor, check_query)
+
+    if not result:
+        print(f"\nError: No product found with Product ID {product_id}. Returning to menu.")
+        return
+
     query = f"""
         SELECT u.username, r.rating, r.review_text, r.created_at
         FROM reviews r
@@ -208,10 +236,37 @@ def place_order(cursor, username):
                 for row in products:
                     print(f"{row[0]:<14}{row[1]}")
             else:
-                print("No products found in the database.")
+                print("No products found on our website.")
 
-        product_id = input("\nEnter Product ID to order: ")
-        quantity = input("Enter quantity: ")
+        while True:
+            product_id = input("\nEnter Product ID to order: ")
+            try:
+                product = float(product_id)
+                if product < 0:
+                    print("Product ID cannot be negative. Please try again.")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input. Please enter a numeric Product ID (e.g., 2).")
+
+        check_query = f"SELECT name FROM products WHERE product_id = {product_id};"
+        result = execute_read_query(cursor, check_query)
+
+        if not result:
+            print(f"\nError: No product found with Product ID {product_id}. Returning to menu.")
+            return
+
+        while True:
+            quantity = input("Enter quantity: ")
+            try:
+                quantity = float(quantity)
+                if quantity < 0:
+                    print("Quantity cannot be negative. Please try again.")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input. Please enter a numeric quantity (e.g., 29.99).")
+        
         address = input("Enter shipping address: ")
 
         call_proc = """
@@ -245,8 +300,53 @@ def leave_review(cursor, username):
         
         user_id = user_result[0][0] 
 
-        product_id = input("Enter Product ID to review: ").strip()
+        print("You will need to know the ID of the product you would like to review.")
+        product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+        if product_id_print != "y" and product_id_print != "n":
+            print("\nYour input was invalid. You get one more try before you are returned to the main menu.")
+            product_id_print = input("Do you want all the product ID's printed for reference [y/n]? ").strip()
+            if product_id_print != "y" and product_id_print != "n":
+                print("\nYour input was invalid.")
+                return
+        if product_id_print == "y":
+            query = "SELECT product_id, name FROM products ORDER BY product_id;"
+            products = execute_read_query(cursor, query)
+
+            if products:
+                print("\nAvailable Products:")
+                print(f"{'Product ID':<14}{'Product Name'}")
+                for row in products:
+                    print(f"{row[0]:<14}{row[1]}")
+            else:
+                print("No products found on our website.")
+
+        while True:
+            product_id = input("\nEnter Product ID to leave a review: ")
+            try:
+                product = float(product_id)
+                if product < 0:
+                    print("Product ID cannot be negative. Please try again.")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input. Please enter a numeric product ID (e.g., 2).")
+        
+        check_query = f"SELECT name FROM products WHERE product_id = {product_id};"
+        result = execute_read_query(cursor, check_query)
+
+        if not result:
+            print(f"\nError: No product found with Product ID {product_id}. Returning to menu.")
+            return
+
         rating = input("Enter rating (1-5): ").strip()
+        try:
+            if int(rating) < 1 or int(rating) > 5:
+                print("Invalid rating number. Returning to menu.")
+                return
+        except ValueError:
+            print("Invalid rating number. Returning to menu.")
+            return
+        
         review_text = input("Enter your review: ").strip()
 
         print("\nReview Summary:")

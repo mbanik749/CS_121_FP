@@ -279,7 +279,7 @@ def execute_read_query(cursor, query):
         if DEBUG:
             print(e, file=sys.stderr)
             sys.exit(1)
-        print("Query failed. Contact system administrator.", file=sys.stderr)
+        print("Uh oh lipstick is leaking everywhere!! Contact makeup artist!", file=sys.stderr)
 
 
 def execute_write_query(connection, cursor, query, params=None):
@@ -291,5 +291,5 @@ def execute_write_query(connection, cursor, query, params=None):
         if DEBUG:
             print(e, file=sys.stderr)
             sys.exit(1)
-        print("Database update failed. Contact system administrator.", file=sys.stderr)
+        print("Uh oh lipstick is leaking everywhere!! Contact makeup artist!", file=sys.stderr)
 

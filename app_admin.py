@@ -77,13 +77,23 @@ def add_product(cursor):
         for idx, row in enumerate(categories, start=1):
             print(f"  {idx}. {row[0]}")
     else:
-        print("  (No categories found in the database yet.)")
+        print("  (No categories found on our website yet.)")
 
-
-    name = input("Enter product name: ").strip()
+    name = input("\nEnter product name: ").strip()
     brand = input("Enter brand name: ").strip()
     category = input("Enter product category: ").strip()
-    price = input("Enter product price: ").strip()
+
+    while True:
+        price_input = input("Enter product price: ").strip()
+        try:
+            price = float(price_input)
+            if price < 0:
+                print("Price cannot be negative. Please try again.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a numeric price (e.g., 29.99).")
+
     ingredients = input("Enter ingredients (optional): ").strip()
 
     print("\nProduct Summary:")
@@ -129,9 +139,25 @@ def update_product(cursor):
             for row in products:
                 print(f"{row[0]:<14}{row[1]}")
         else:
-            print("No products found in the database.")
+            print("No products found on our website.")
         
-    product_id = input("\nEnter Product ID to update: ").strip()
+    while True:
+        product_id = input("\nEnter Product ID to update: ").strip()
+        try:
+            product = float(product_id)
+            if product < 0:
+                print("Product ID cannot be negative. Please try again.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a numeric Product ID (e.g., 2).")
+
+    check_query = f"SELECT name FROM products WHERE product_id = {product_id};"
+    result = execute_read_query(cursor, check_query)
+
+    if not result:
+        print(f"\nError: No product found with Product ID {product_id}. Returning to menu.")
+        return
 
     print("\nWhat would you like to update?")
     print("  1 - Name")
@@ -140,7 +166,7 @@ def update_product(cursor):
     print("  4 - Price")
     print("  5 - Ingredients")
 
-    choice = input("Enter choice (1-5): ").strip()
+    choice = input("\nEnter choice (1-5): ").strip()
     fields = {
         "1": "name",
         "2": "brand",
@@ -153,7 +179,20 @@ def update_product(cursor):
         print("Invalid field choice.")
         return
 
-    new_value = input(f"Enter new value for {fields[choice]}: ").strip()
+    if choice == "4":
+        while True:
+            new_value = input(f"Enter new value for {fields[choice]}: ").strip()
+            try:
+                price = float(new_value)
+                if price < 0:
+                    print("Price cannot be negative. Please try again.")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input. Please enter a numeric price (e.g., 29.99).")
+    else:
+        new_value = input(f"Enter new value for {fields[choice]}: ").strip()
+
     query = f"""
         UPDATE products
         SET {fields[choice]} = %s
@@ -188,15 +227,24 @@ def delete_product(cursor):
             for row in products:
                 print(f"{row[0]:<14}{row[1]}")
         else:
-            print("No products found in the database.")
+            print("No products found on our website.")
     
-    product_id = input("\nEnter Product ID to delete: ").strip()
+    while True:
+        product_id = input("\nEnter Product ID to delete: ")
+        try:
+            product = float(product_id)
+            if product < 0:
+                print("Product ID cannot be negative. Please try again.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a numeric Product ID (e.g., 2).")
 
     query = f"SELECT name, brand, category, price, ingredients FROM products WHERE product_id = {product_id};"
     result = execute_read_query(cursor, query)
 
     if not result:
-        print(f"No product found with ID {product_id}.")
+        print(f"No product found with ID {product_id}. Returning to menu.")
         return
 
     product = result[0]
@@ -231,9 +279,9 @@ def view_all_orders(cursor):
 
     if rows:
         print("\nAll Orders:")
-        print(f"{'Order ID':<12}{'Username':<15}{'Product ID':<12}{'Qty':<6}{'Address':<35}{'Order Date'}")
+        print(f"{'Order ID':<12}{'Username':<15}{'Product ID':<12}{'Qty':<6}{'Address':<40}{'Order Date'}")
         for row in rows:
-            print(f"{row[0]:<12}{row[1]:<15}{row[2]:<12}{row[3]:<6}{row[4]:<35}{str(row[5])}")
+            print(f"{row[0]:<12}{row[1]:<15}{row[2]:<12}{row[3]:<6}{row[4]:<40}{str(row[5])}")
         print(f"\nTotal Orders: {len(rows)}")
     else:
         print("No orders found.")
@@ -285,9 +333,18 @@ def delete_review(cursor):
             for row in reviews:
                 print(f"{row[0]:<14}{row[1]}")
         else:
-            print("No reviews found in the database.")
+            print("No reviews found on our website.")
     
-    review_id = input("\nEnter Review ID to delete: ").strip()
+    while True:
+        review_id = input("\nEnter Review ID to delete: ").strip()
+        try:
+            review = float(review_id)
+            if review < 0:
+                print("Review ID cannot be negative. Please try again.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a numeric review ID (e.g., 2).")
 
     query = f"""
         SELECT r.review_id, u.username, r.product_id, r.rating, r.review_text, r.created_at
@@ -298,7 +355,7 @@ def delete_review(cursor):
     result = execute_read_query(cursor, query)
 
     if not result:
-        print(f"No review found with ID {review_id}.")
+        print(f"No review found with ID {review_id}. Returning to menu.")
         return
 
     review = result[0]
